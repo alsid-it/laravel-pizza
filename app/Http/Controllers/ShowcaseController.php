@@ -10,13 +10,9 @@ class ShowcaseController extends Controller
 {
     public function index()
     {
-        // Получаем все пиццы и напитки из базы данных
-        $pizzas = Pizza::all();
-        $drinks = Drink::all();
+        $pizzas = Pizza::paginate(10);
+        $drinks = Drink::paginate(10);
 
-        // Session::flush();
-
-        // Возвращаем представление с данными о пиццах и напитках
         return view('showcase', compact('pizzas', 'drinks'));
     }
 }
