@@ -17,7 +17,7 @@ Route::get('/', [ShowcaseController::class, 'index'])->name('showcase');
 Route::get('/my_orders', [OrderController::class, 'my_orders'])->name('orders.my_orders');
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart') ;
-Route::group(['prefix' => 'cart', 'as' => 'cart.'], function () {
+Route::group(['prefix' => 'cart', 'as' => 'cart.'], static function () {
     Route::post('/add', [CartController::class, 'add'])->name('add');
     Route::post('/delete', [CartController::class, 'delete'])->name('delete');
     Route::post('/update', [CartController::class, 'update'])->name('update');
@@ -33,7 +33,7 @@ Route::post('/login', [AuthController::class, 'auth'])->name('auth');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/admin', [AdminController::class, 'index'])->name('admin')->middleware(AdminMiddleware::class);
-Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
+Route::group(['prefix' => 'admin', 'as' => 'admin.'], static function () {
     Route::get('/add-pizza', [AdminController::class, 'addPizza'])->name('add-pizza');
     Route::get('/add-drink', [AdminController::class, 'addDrink'])->name('add-drink');
     Route::post('/pizzas', [PizzaController::class, 'store'])->name('pizzas.store');
