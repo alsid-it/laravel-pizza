@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [ShowcaseController::class, 'index'])->name('showcase');
 
-Route::get('/my_orders', [OrderController::class, 'my_orders'])->name('orders.my_orders');
+Route::get('/my_orders', [OrderController::class, 'my_orders'])->name('orders.my_orders')->middleware('auth');;
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart') ;
 Route::group(['prefix' => 'cart', 'as' => 'cart.'], static function () {
