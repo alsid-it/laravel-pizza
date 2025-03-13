@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\OrderStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,12 +16,7 @@ class Order extends Model
 
     public static function statuses(): array
     {
-        return [
-            self::STATUS_PENDING,
-            self::STATUS_DELIVERING,
-            self::STATUS_DELIVERED,
-            self::STATUS_CANCELLED,
-        ];
+        return array_map(fn($case) => $case->value, OrderStatus::cases());
     }
 
     protected $fillable = [
