@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class PizzaFactory extends Factory
 {
-    protected array $pizzaNames = [
+    protected const PIZZA_NAMES = [
         'Маргарита',
         'Пепперони',
         'Гавайская',
@@ -44,11 +44,11 @@ class PizzaFactory extends Factory
 
     protected function getRandomPizzaName(): string
     {
-        if (count($this->pizzaNames) === count($this->usedPizzaNames)) {
+        if (count(self::PIZZA_NAMES) === count($this->usedPizzaNames)) {
             $this->usedPizzaNames = [];
         }
 
-        $availableNames = array_diff($this->pizzaNames, $this->usedPizzaNames);
+        $availableNames = array_diff(self::PIZZA_NAMES, $this->usedPizzaNames);
         $randomName = fake()->randomElement($availableNames);
         $this->usedPizzaNames[] = $randomName;
 
