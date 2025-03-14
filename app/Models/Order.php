@@ -9,10 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     use HasFactory;
-    const STATUS_PENDING = 'в работе';
-    const STATUS_DELIVERING = 'доставляется';
-    const STATUS_DELIVERED = 'доставлен';
-    const STATUS_CANCELLED = 'отменен';
+
+    const MAX_PIZZAS_IN_ORDER = 10;
+    const MAX_DRINKS_IN_ORDER = 20;
 
     public static function statuses(): array
     {

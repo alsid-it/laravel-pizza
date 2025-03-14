@@ -53,8 +53,8 @@ class OrderFactory extends Factory
         $pizzas = Pizza::inRandomOrder()->limit($this->faker->numberBetween(1, 5))->get();
         $drinks = Drink::inRandomOrder()->limit($this->faker->numberBetween(1, 3))->get();
 
-        $maxPizzaInOrder = OrderController::getPizzaMaxInOrder();
-        $maxDrinkInOrder = OrderController::getDrinkMaxInOrder();
+        $maxPizzaInOrder = Order::MAX_PIZZAS_IN_ORDER;
+        $maxDrinkInOrder = Order::MAX_DRINKS_IN_ORDER;
 
         $orderList = [
             'pizzas' => [],

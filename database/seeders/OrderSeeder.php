@@ -53,7 +53,7 @@ class OrderSeeder extends Seeder
         // Генерация массива для напитков
         $drinks = [];
         $totalDrinks = 0;
-        $maxDrinks = OrderController::getDrinkMaxInOrder(); // Максимальное количество напитков
+        $maxDrinks = Order::MAX_DRINKS_IN_ORDER;
         $drinkCount = rand(1, 5); // Количество разных напитков в заказе
         $minDrinkId = Drink::min('id');
         $maxDrinkId = Drink::max('id');
@@ -80,7 +80,7 @@ class OrderSeeder extends Seeder
         // Генерация массива для пицц
         $pizzas = [];
         $totalPizzas = 0;
-        $maxPizzas = OrderController::MAX_PIZZAS_IN_ORDER; // Максимальное количество пицц
+        $maxPizzas = Order::MAX_PIZZAS_IN_ORDER; // Максимальное количество пицц
         $pizzaCount = rand(1, 5); // Количество разных пицц в заказе
         $minPizzaId = Pizza::min('id');
         $maxPizzaId = Pizza::max('id');

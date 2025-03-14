@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\Drink;
+use App\Models\Order;
 use App\Models\Pizza;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -168,8 +169,8 @@ class CartController extends Controller
 
     public static function checkPizzasDrinksAddInOrder(int $userId, array $pizzas, array $drinks): ?array
     {
-        $maxPizzasQuantity = OrderController::MAX_PIZZAS_IN_ORDER;
-        $maxDrinksQuantity = OrderController::MAX_DRINKS_IN_ORDER;
+        $maxPizzasQuantity = Order::MAX_PIZZAS_IN_ORDER;
+        $maxDrinksQuantity = Order::MAX_DRINKS_IN_ORDER;
 
         $currentPizzasAmount = self::countUserCartPizzasQuantity($userId);
         $currentDrinksAmount = self::countUserCartDrinksQuantity($userId);
