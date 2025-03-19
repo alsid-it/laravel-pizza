@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\DTO\OrderDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
@@ -13,8 +14,6 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    public string $validateOrderError = '';
-
     /**
      * Display a listing of the resource.
      */
@@ -40,7 +39,7 @@ class OrderController extends Controller
         $orderData = $request->all();
         $orderList = $orderData['order_list'];
 
-        if (!OrderService::validateOrderList($orderList, $this->validateOrderError)) {
+        if (!OrderService::validateOrderList($orderList)) {
             $errorArr = [
                 'message' => 'The order_list is invalid.',
                 'errors' => [
@@ -50,12 +49,16 @@ class OrderController extends Controller
                 ],
             ];
 
-            $errorArr['validate_order_message'] = $this->validateOrderError;
+            $errorArr['validate_order_message'] = OrderService::$validateOrderError;
 
             return response()->json($errorArr, 422);
         }
 
-        $createdOrder = OrderService::createOrder($request->all());
+        // Создаем OrderDTO из данных запроса
+        $orderDTO = OrderDTO::fromArray($orderData);
+
+        // Передаем OrderDTO в метод createOrder
+        $createdOrder = OrderService::createOrder($orderDTO);
 
         return new OrderResource($createdOrder);
     }

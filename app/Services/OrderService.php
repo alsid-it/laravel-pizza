@@ -1,19 +1,20 @@
 <?php
 namespace App\Services;
 
+use App\DTO\OrderDTO;
 use App\Enums\OrderProductTypes;
-use App\Models\Drink;
 use App\Models\Order;
-use App\Models\Pizza;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Validator;
 
 class OrderService
 {
+    public static string $validateOrderError = '';
     const ALLOWED_ORDER_FILTERS = ['user_id'];
 
-    public static function createOrder(array $orderData): Order
+    public static function createOrder(OrderDTO $orderDTO): Order
     {
+        $orderData = $orderDTO->toArray();
+
         return Order::create($orderData);
     }
 
@@ -30,29 +31,8 @@ class OrderService
         return $query;
     }
 
-    public static function validateOrderList (string $orderString, &$validateOrderError): bool
+    public static function validateOrderList (array $orderData): bool
     {
-        $orderData = json_decode($orderString, true);
-
-        $validator = Validator::make($orderData, [
-            'pizzas' => 'required|array',
-            'drinks' => 'required|array',
-        ]);
-
-        if ($validator->fails()) {
-            $validateOrderError = 'Нет данных о пиццах/напитках';
-            return false;
-        }
-
-        // Проверяем id pizzas и drinks
-        $hasValidPizzas = self::validateItems($orderData['pizzas'], Pizza::class);
-        $hasValidDrinks = self::validateItems($orderData['drinks'], Drink::class);
-
-        if (!$hasValidPizzas || !$hasValidDrinks) {
-            $validateOrderError = 'Неправильный id пиццы/напитка';
-            return false;
-        }
-
         $orderProductTypes = array_map(
             fn(OrderProductTypes $type) => $type->value,
             OrderProductTypes::cases()
@@ -66,9 +46,11 @@ class OrderService
                 $drinksAmount = 0;
                 $pizzasAmount = 0;
 
-                foreach ($productsArray as $productAmount) {
+                foreach ($productsArray as $productData) {
+                    $productAmount = $productData['quantity'];
+
                     if (!is_numeric($productAmount)) {
-                        $validateOrderError = 'Используется не верное число продукта в заказе';
+                        self::$validateOrderError = 'Используется не верное число продукта в заказе';
                         return false;
                     }
 
@@ -82,22 +64,22 @@ class OrderService
                     }
                 }
             } else {
-                $validateOrderError = 'Не верный тип продукта в заказе, доступный только пиццы и напитки';
+                self::$validateOrderError = 'Не верный тип продукта в заказе, доступный только пиццы и напитки';
                 return false;
             }
 
             if ($amount <= 0) {
-                $validateOrderError = 'Количество товара в заказе равно 0';
+                self::$validateOrderError = 'Количество товара в заказе равно 0';
                 return false;
             }
 
             if ($drinksAmount > Order::MAX_DRINKS_IN_ORDER) {
-                $validateOrderError = 'Максимум ' . Order::MAX_DRINKS_IN_ORDER . ' напитков в заказе';
+                self::$validateOrderError = 'Максимум ' . Order::MAX_DRINKS_IN_ORDER . ' напитков в заказе';
                 return false;
             }
 
             if ($pizzasAmount > Order::MAX_PIZZAS_IN_ORDER) {
-                $validateOrderError = 'Максимум ' . Order::MAX_PIZZAS_IN_ORDER . ' пицц в заказе';
+                self::$validateOrderError = 'Максимум ' . Order::MAX_PIZZAS_IN_ORDER . ' пицц в заказе';
                 return false;
             }
         }

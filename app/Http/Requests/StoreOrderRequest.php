@@ -24,7 +24,13 @@ class StoreOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'order_list' => 'required|json',
+            'order_list' => 'required|array',
+            'order_list.pizzas' => 'required|array',
+            'order_list.pizzas.*.id' => 'required|exists:pizzas,id',
+            'order_list.pizzas.*.quantity' => 'required|integer|min:1',
+            'order_list.drinks' => 'required|array',
+            'order_list.drinks.*.id' => 'required|exists:drinks,id',
+            'order_list.drinks.*.quantity' => 'required|integer|min:1',
             'phone' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'address' => 'required|string|max:255',
